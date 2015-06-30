@@ -58,15 +58,15 @@ echo "[+] Targets  : ${targets}"
 # backup any old scans before we start a new one
 mydir=$(dirname $0)
 mkdir -p "${mydir}/backup/"
-if [[ -d "${mydir}/ndir/" ]]; then 
-    mv "${mydir}/ndir/" "${mydir}/backup/ndir-$(date "+%Y%m%d-%H%M%S")/"
+if [[ -d "${mydir}/nmap/" ]]; then 
+    mv "${mydir}/nmap/" "${mydir}/backup/nmap-$(date "+%Y%m%d-%H%M%S")/"
 fi
 if [[ -d "${mydir}/udir/" ]]; then 
     mv "${mydir}/udir/" "${mydir}/backup/udir-$(date "+%Y%m%d-%H%M%S")/"
 fi 
 
-rm -rf "${mydir}/ndir/"
-mkdir -p "${mydir}/ndir/"
+rm -rf "${mydir}/nmap/"
+mkdir -p "${mydir}/nmap/"
 rm -rf "${mydir}/udir/"
 mkdir -p "${mydir}/udir/"
 
@@ -82,8 +82,8 @@ while read ip; do
         if [[ ! -z $ports ]]; then 
             # nmap follows up
             echo "[+] Ports for nmap to scan: $ports"
-            echo "[+] nmap -e ${iface} ${nmap_opt} -oX ${mydir}/ndir/${ip}-tcp.xml -oG ${mydir}/ndir/${ip}-tcp.grep -p ${ports} ${ip}"
-            nmap -e ${iface} ${nmap_opt} -oX ${mydir}/ndir/${ip}-tcp.xml -oG ${mydir}/ndir/${ip}-tcp.grep -p ${ports} ${ip}
+            echo "[+] nmap -e ${iface} ${nmap_opt} -oA ${mydir}/nmap/${ip}-tcp -p ${ports} ${ip}"
+            nmap -e ${iface} ${nmap_opt} -oA ${mydir}/nmap/${ip}-tcp -p ${ports} ${ip}
         else
             echo "[!] No TCP ports found"
         fi
@@ -97,8 +97,8 @@ while read ip; do
         ports=$(cat "${mydir}/udir/${ip}-udp.txt" | grep open | cut -d"[" -f2 | cut -d"]" -f1 | sed 's/ //g' | tr '\n' ',')
         if [[ ! -z $ports ]]; then
             # nmap follows up
-            echo "[+] nmap -e ${iface} ${nmap_opt} -sU -oX ${mydir}/ndir/${ip}-udp.xml -oG ${mydir}/ndir/${ip}-udp.grep -p ${ports} ${ip}"
-            nmap -e ${iface} ${nmap_opt} -sU -oX ${mydir}/ndir/${ip}-udp.xml -oG ${mydir}/ndir/${ip}-udp.grep -p ${ports} ${ip}
+            echo "[+] nmap -e ${iface} ${nmap_opt} -sU -oA ${mydir}/nmap/${ip}-udp -p ${ports} ${ip}"
+            nmap -e ${iface} ${nmap_opt} -sU -oA ${mydir}/nmap/${ip}-udp -p ${ports} ${ip}
         else
             echo "[!] No UDP ports found"
         fi
@@ -106,4 +106,3 @@ while read ip; do
 done < ${targets}
 
 echo "[+] Scans completed"
-
