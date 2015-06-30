@@ -23,7 +23,7 @@ fi
 # commonly used default options
 proto="tcp"
 iface="eth0"
-nmap_opt="-sV"
+nmap_opt="-sV -sT -vvv"
 targets=""
 
 while getopts "p:i:t:n:h" OPT; do
@@ -106,3 +106,4 @@ while read ip; do
 done < ${targets}
 
 echo "[+] Scans completed"
+
