@@ -23,7 +23,7 @@ fi
 # commonly used default options
 proto="tcp"
 iface="eth0"
-nmap_opt="-sV -sT -vvv"
+nmap_opt="-sV -vvv"
 targets=""
 
 while getopts "p:i:t:n:h" OPT; do
